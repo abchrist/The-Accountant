@@ -107,8 +107,8 @@ class Player {
     	
 
     	
-         int findDistanceToTarget(int targetX, int targetY){
-    		return (int) Math.hypot(targetX - x, targetY - y);
+         int findDistanceToTarget(int initX, int initY, int targetX, int targetY){
+    		return (int) Math.hypot(targetX - initX, targetY - initY);
     	}
     	
     	void setPosition(int NewX, int NewY){
@@ -121,13 +121,13 @@ class Player {
     		destY = newDestY;
     	}
     	
-    	long findDamageDealt(Enemy enemy){
-    		int distToEnemy = enemy.findDistanceToTarget(x, y);
+    	long findDamageDealt(int initX, int initY, Enemy enemy){
+    		int distToEnemy = enemy.findDistanceToTarget(initX, initY, enemy.getX(), enemy.getY());
     		return Math.round((125000/Math.pow(distToEnemy,1.2)));
     	}
     	
-    	long findDamageDealt(int x1, int y1){
-    		int distToEnemy = findDistanceToTarget(x1, y1);
+    	long findDamageDealt(int initX, int initY, int enemyX,int enemyY){
+    		int distToEnemy = findDistanceToTarget(initX, initY, enemyX, enemyY );
     		return Math.round((125000/Math.pow(distToEnemy,1.2)));
     	}
     	
@@ -169,7 +169,7 @@ class Player {
 		 int turnsTilKill = 0;
 		 
 		 while (enemyLife > 0){
-			 int damageDealt = (int) findDamageDealt(enemyX, enemyY);
+			 int damageDealt = (int) findDamageDealt(x, y, enemyX, enemyY);
 			 enemyLife = enemyLife - damageDealt;
 			 int[] newEnemyPosition = enemy.moveTowardTarget(enemyX, enemyY, dataPoint.getX(), dataPoint.getY());
 			 enemyX = newEnemyPosition[0];
@@ -190,7 +190,7 @@ class Player {
 		 if(distanceNeededForKill < Enemy.shootRange){
 			 System.err.println("Cannot Kill Enemy in 1 Shot!!!!!");
 		 }
-		 int distToEnemy = findDistanceToTarget(enemyX, enemyY);
+		 int distToEnemy = findDistanceToTarget(wolffX, wolffY, enemyX, enemyY);
 		 int turnTillKill = 0;
 		 while (distToEnemy > distanceNeededForKill){
 			 int[] wolffTargetCoordinates = findMeanCoordinates(enemyX, enemyY, dataPoint.getX(), dataPoint.getY());
@@ -201,7 +201,7 @@ class Player {
 			 int[] enemyNewCoordinates = enemy.moveTowardTarget(enemyX, enemyY, dataPoint.getX(), dataPoint.getY());
 			 enemyX = enemyNewCoordinates[0];
 			 enemyY = enemyNewCoordinates[1];
-			 distToEnemy = findDistanceToTarget(enemyX, enemyY);
+			 distToEnemy = findDistanceToTarget(wolffX, wolffY, enemyX, enemyY);
 			 turnTillKill++;
 		 }
 		 
@@ -267,9 +267,13 @@ class Player {
     		return (int) Math.ceil(distToTargetInCaptureRange/movingRange);
     	}
     	
-    	 int findDistanceToTarget(int targetX, int targetY){
-    		return (int) Math.hypot(targetX - x, targetY - y);
-    	}
+        int findDistanceToTarget(int initX, int initY, int targetX, int targetY){
+   		return (int) Math.hypot(targetX - initX, targetY - initY);
+        }
+        
+        int findDistanceToTarget(int targetX, int targetY){
+       		return (int) Math.hypot(targetX - x, targetY - y);
+            }
     	 
     	 double findAngleToTarget(int initX, int initY, int targetX, int targetY){
     		 return Math.atan2(targetY - initY, targetX - initX);
